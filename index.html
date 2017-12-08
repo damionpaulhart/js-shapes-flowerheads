@@ -1,0 +1,176 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Flowerhead</title>
+</head>
+<style>canvas{ border: 1px solid black; }
+canvas {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 50%;
+}
+.wrapper {
+  display: grid;
+  grid-template-columns:50% 50%;
+  grid-template-rows: 100px auto 100px;
+}
+.box {
+  background-color: #444;
+  color: #fff;
+  border-radius: 5px;
+  padding: 20px;
+  font-size: 150%;
+}
+input.text {width:125px}
+.header, .footer {grid-column-start:1;
+grid-column-end:3;}
+label {display: inline-block;
+    width: 80px;}</style>
+<script>
+	var _dot;
+var _degree, _c;
+var _n;
+var _dotScale;
+//angle:φ = n * 137.5°
+//radius: r = c * √n
+function updateTextInput(val) {
+          document.getElementById('textInput').value=val; 
+        }
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+var toRadians = function (degree) {
+    return degree * (Math.PI / 180);
+};
+function CalculatePhyllotaxis(degree, scale, count)
+{
+  var angle = count * toRadians(degree);
+  //console.log(angle);
+  var r = scale * Math.sqrt(count);
+
+  var person = {
+    x:r * Math.cos(angle),
+    y:r * Math.sin(angle)};
+  //x = r * Math.cos(angle);
+ // y = r * Math.sin(angle);
+  //return "x: " + x + ", y: " + y;
+  //console.log("here3");
+  return person;
+}
+//console.log("hello");
+//console.log(CalculatePhyllotaxis(137.5,1,1));
+async function run(num,scale,count,size){
+  
+
+
+//var ctx = document.querySelector("canvas").getContext("2d");
+var ctx = document.getElementById('canvas').getContext('2d');
+ctx.fillStyle = "black";
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "white";
+  //context.fillRect(10, 10, 100, 50);
+//
+
+for(n=0;n<=count;n++){
+  var point = CalculatePhyllotaxis(num,scale,n);
+  //var point = CalculatePhyllotaxis(137.3,2,n);
+  //var point = CalculatePhyllotaxis(4,2,n);
+  //var point = CalculatePhyllotaxis(12,2,n);
+  var w = (canvas.width / 2) + point.x;
+  var h = (canvas.height / 2) + point.y;
+  ctx.beginPath();
+  ctx.arc(w, h, size, 0, Math.PI * 2);
+  ctx.fill();
+  //await sleep(10);
+}
+//ctx.arc(canvas.width / 2, canvas.height / 2, 1, 0, Math.PI * 2);
+//ctx.fill();
+
+//ctx.arc(canvas.width / 2, canvas.height / 2, 10, 0, Math.PI * 2, true);
+
+
+//ctx.save();
+//context.stroke();
+}
+//helpers
+/**
+ * converts degree to radians
+ * @param degree
+ * @returns {number}
+ */
+
+
+/**
+ * Converts radian to degree
+ * @param radians
+ * @returns {number}
+ */
+var toDegree = function (radians) {
+    return radians * (180 / Math.PI);
+}
+
+/**
+ * Rounds a number mathematical correct to the number of decimals
+ * @param number
+ * @param decimals (optional, default: 5)
+ * @returns {number}
+ */
+var roundNumber = function(number, decimals) {
+    decimals = decimals || 5;
+    return Math.round(number * Math.pow(10, decimals)) / Math.pow(10, decimals);
+}
+//the object
+var MathD = {
+    sin: function(number){
+        return roundNumber(Math.sin(toRadians(number)));
+    },
+    cos: function(number){
+        return roundNumber(Math.cos(toRadians(number)));
+    },
+    tan: function(number){
+        return roundNumber(Math.tan(toRadians(number)));
+    },
+    asin: function(number){
+        return roundNumber(toDegree(Math.asin(number)));
+    },
+    acos: function(number){
+       return roundNumber(toDegree(Math.acos(number)));
+   },
+   atan: function(number){
+       return roundNumber(toDegree(Math.atan(number)));
+   }
+};</script>
+<body>
+<div class="wrapper">
+<p class="box header">This tutorial will show you how to create visualizations of the Phyllotaxis algorythm. </p>
+  <div class="box">
+    <label>Degree </label><input type="text" id="textInput" value=""><br>
+<label> </label><input id="range" type="range" min="0" max="360" step="any" list="tickmarks"  onchange="updateTextInput(this.value);run(range.value, textScale.value, textCount.value, textSize.value)">
+
+<datalist id="tickmarks">
+  <option value="0">
+  <option value="60">
+  <option value="120">
+  <option value="180">
+  <option value="240">
+    <option value="300">
+  <option value="360" label="360">
+</datalist>
+    <br>
+    <label>Count </label><input type="text" id="textCount" value="1000"><br>
+    <label>Scale </label><input type="text" id="textScale" value="2"><br>
+    <label>Size </label><input type="text" id="textSize" value="1"><br>
+<input type="button" value="run" onclick="run(137.5)">
+<input type="button" value="137.3" onclick="run(137.3)">
+<input type="button" value="clear" onclick="clearturtle(0)">
+    
+  </div>
+<canvas id="canvas"  class="box"></canvas>
+<p class="box footer">After canvas.</p>
+</div>
+</body>
+</html>
